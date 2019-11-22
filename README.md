@@ -11,6 +11,13 @@ Slides: https://speakerdeck.com/lkysow/connecting-and-migrating-applications-wit
 During this talk I migrated the `chargers` service running on a VM into Kubernetes without downtime.
 The service was being called from Kubernetes by the `nfl` service.
 
+From:
+![Migration Start](migration1.png)
+
+To:
+![Migration End](migration2.png)
+
+
 ## Setup
 The setup involved two parts: the VM (running on Google Cloud Platform) and Kubernetes (running in Azure Kubernetes Service).
 **NOTE: This setup does not cover enabling ACLs or TLS for Consul. This is only for a quick demo. If you leave this
