@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nfl
+  labels:
+    app: nfl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nfl
+  template:
+    metadata:
+      labels:
+        app: nfl
+      annotations:
+        "consul.hashicorp.com/connect-inject": "true"
+        "consul.hashicorp.com/connect-service-upstreams": "chargers:1234"
+    spec:
+      containers:
+        - name: nfl
+          image: anubhavmishra/tiny-tools:latest
+          command: ["sleep", "infinity"]

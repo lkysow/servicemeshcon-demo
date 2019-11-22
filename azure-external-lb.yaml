@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+  name: hashicorp-consul-server-0-external
+  namespace: default
+spec:
+  externalTrafficPolicy: Cluster
+  ports:
+  - name: http
+    nodePort: 32054
+    port: 8500
+    protocol: TCP
+    targetPort: 8500
+  - name: serfwan-tcp
+    nodePort: 30572
+    port: 8302
+    protocol: TCP
+    targetPort: 8302
+  - name: server
+    nodePort: 30204
+    port: 8300
+    protocol: TCP
+    targetPort: 8300
+  publishNotReadyAddresses: true
+  selector:
+    app: consul
+    component: server
+    release: hashicorp
+  sessionAffinity: None
+  type: LoadBalancer

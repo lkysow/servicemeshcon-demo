@@ -1,0 +1,35 @@
+global:
+  datacenter: azure
+  image: "consul:1.6.2"
+  gossipEncryption:
+    secretName: consul-encryption-key
+    secretKey: key
+connectInject:
+  enabled: true
+  centralConfig:
+    enabled: true
+client:
+  grpc: true
+  extraConfig: |
+    {
+      "primary_datacenter": "azure"
+    }
+server:
+  replicas: 1
+  bootstrapExpect: 1
+  extraConfig: |
+    {
+      "primary_datacenter": "azure",
+      "advertise_addr_wan": "52.255.216.251"
+    }
+meshGateway:
+  enabled: true
+  replicas: 1
+  enableHealthChecks: false
+  service:
+    enabled: true
+    type: LoadBalancer
+  wanAddress:
+    useNodeIP: false
+    host: 20.185.8.128
+
