@@ -4,8 +4,29 @@ This repository contains the code used during my lightning talk
 [Connecting and Migrating Heterogeneous Applications with Consul Service Mesh](https://events19.linuxfoundation.org/events/servicemeshcon-2019/program/schedule/)
 given at ServiceMeshCon 2019.
 
-Video of talk: <not yet published>
+Video of talk: *Not yet published*
+
 Slides: https://speakerdeck.com/lkysow/connecting-and-migrating-applications-with-consul-service-mesh
+
+* [Overview](#overview)
+* [Setup](#setup)
+  + [Azure Kubernetes Service (AKS)](#azure-kubernetes-service--aks-)
+    - [Install Consul](#install-consul)
+    - [Install the NFL service](#install-the-nfl-service)
+  + [VM](#vm)
+    - [Install Dependencies](#install-dependencies)
+    - [Configure Consul](#configure-consul)
+    - [Configure Chargers service](#configure-chargers-service)
+    - [Configure Chargers Sidecar Proxy](#configure-chargers-sidecar-proxy)
+    - [Configure Mesh Gateway](#configure-mesh-gateway)
+* [Demo](#demo)
+  + [Setup the Curl](#setup-the-curl)
+  + [Prep for migration](#prep-for-migration)
+  + [Migrate](#migrate)
+  + [Test the connection](#test-the-connection)
+  + [Migrate traffic](#migrate-traffic)
+  + [Conclusion](#conclusion)
+
 
 ## Overview
 During this talk I migrated the `chargers` service running on a VM into Kubernetes without downtime.
@@ -20,6 +41,7 @@ To:
 
 ## Setup
 The setup involved two parts: the VM (running on Google Cloud Platform) and Kubernetes (running in Azure Kubernetes Service).
+
 **NOTE: This setup does not cover enabling ACLs or TLS for Consul. This is only for a quick demo. If you leave this
 open then an attacker will find a way to exploit Consul.** 
 
@@ -36,16 +58,17 @@ How to setup Consul and dependencies on AKS.
   server externally. We apply it first so we can get the external IP address and
   use that in our Consul config.
 * Run `git clone https://github.com/hashicorp/consul-helm.git`
-* Replace the external IP in `azure-values.yaml` under the `server.extraConfig.advertise_addr_wan` key:
-  ```hcl
-  server:
-    ...
-    extraConfig: |
-      {
-        "primary_datacenter": "azure",
-        "advertise_addr_wan": "<replace me>"
-      }
-  ```
+* Replace the external IP in `azure-values.yaml` under the `server.extraConfig.advertise_addr_wan` key with
+  the value from above:
+    ```hcl
+    server:
+      ...
+      extraConfig: |
+        {
+          "primary_datacenter": "azure",
+          "advertise_addr_wan": "<replace me>"
+        }
+    ```
 * Generate a gossip encryption with `consul keygen` and use it in `azure-encryption-key-secret.yaml`.
 * Apply the encryption key secret with `kubectl apply -f azure-encryption-key-secret.yaml`
 * Run `helm install hashicorp ./consul-helm -f azure-values.yaml` (I used Helm 3).
@@ -200,15 +223,15 @@ How to set up Consul and the chargers service on the VM.
   }
   ```
 * Add the service definition to Consul by creating `/etc/consul.d/service.hcl`:
-```json
-{
-  "service": {
-    "name": "chargers",
-    "port": 8000,
-    "connect": {"sidecar_service": {}}
+  ```json
+  {
+    "service": {
+      "name": "chargers",
+      "port": 8000,
+      "connect": {"sidecar_service": {}}
+    }
   }
-}
-```
+  ```
 * Run `consul reload`
 * You should see the `chargers` service in the Consul UI
 
