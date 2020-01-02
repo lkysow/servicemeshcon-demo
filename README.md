@@ -4,7 +4,7 @@ This repository contains the code used during my lightning talk
 [Connecting and Migrating Heterogeneous Applications with Consul Service Mesh](https://events19.linuxfoundation.org/events/servicemeshcon-2019/program/schedule/)
 given at ServiceMeshCon 2019.
 
-Video of talk: *Not yet published*
+Video of talk: https://www.youtube.com/watch?v=v-ZYkGYi3jQ
 
 Slides: https://speakerdeck.com/lkysow/connecting-and-migrating-applications-with-consul-service-mesh
 
